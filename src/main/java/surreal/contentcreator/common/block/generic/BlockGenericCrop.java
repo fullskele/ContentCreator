@@ -9,10 +9,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import surreal.contentcreator.ContentCreator;
 import surreal.contentcreator.types.CTSoundType;
 
@@ -21,11 +22,21 @@ import java.util.Random;
 
 @SuppressWarnings("all")
 public class BlockGenericCrop extends BlockCrops implements IGenericBlock {
-    private ItemStack s, c;
+    private boolean cropItemExists;
+    private String cropID;
+    private int cropMeta;
+    private ItemStack s, crop;
     private int cMin;
 
     public BlockGenericCrop(String c, int meta, int cMin) {
-        this.c = GameRegistry.makeItemStack(c, meta, 1, null);
+        cropItemExists = true;
+        cropID = c;
+        cropMeta = meta;
+
+        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(cropID));
+        ItemStack itemStack = item == null ? null : new ItemStack(item, 1, cropMeta);
+        crop = itemStack == null ? null : itemStack;
+
         this.cMin = Math.max(cMin, 1);
     }
 
@@ -35,13 +46,20 @@ public class BlockGenericCrop extends BlockCrops implements IGenericBlock {
         Random rand = world instanceof World ? ((World)world).rand : new Random();
 
         if (age >= getMaxAge()) {
-            for (int i = 0; i < rand.nextInt(cMin) + 1; i++) {
-                ContentCreator.getLogger().info("Adding " + c.getItem().getRegistryName() + " to drops.");
-                drops.add(c);
+            if (crop == null && cropItemExists) {
+                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(cropID));
+                if (item != null) crop = new ItemStack(item, 1, cropMeta);
+                if (crop == null) cropItemExists = false;
+            }
+            if (crop != null) {
+                for (int i = 0; i < rand.nextInt(cMin) + 1; i++) {
+                    ContentCreator.getLogger().info("Adding " + crop.getItem().getRegistryName() + " to drops.");
+                    drops.add(crop.copy());
+                }
             }
         }
 
-        drops.add(s);
+        drops.add(s.copy());
     }
 
     @Override
@@ -60,12 +78,12 @@ public class BlockGenericCrop extends BlockCrops implements IGenericBlock {
 
     @Override
     public int damageDropped(IBlockState state) {
-        return this.isMaxAge(state) ? c.getMetadata() : s.getMetadata();
+        return this.isMaxAge(state) ? crop.getMetadata() : s.getMetadata();
     }
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return this.isMaxAge(state) ? c.getItem() : s.getItem();
+        return this.isMaxAge(state) ? crop.getItem() : s.getItem();
     }
 
     @Override

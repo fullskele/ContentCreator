@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
@@ -14,9 +13,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import surreal.contentcreator.ContentCreator;
 import surreal.contentcreator.types.CTSoundType;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -25,8 +24,18 @@ public class BlockGenericCrop extends BlockCrops implements IGenericBlock {
     private boolean cropItemExists;
     private String cropID;
     private int cropMeta;
-    private ItemStack s, crop;
+    private ItemStack seed, crop;
     private int cMin;
+
+    @Nullable
+    private ItemStack tryGetCrop() {
+        if (crop == null && cropItemExists) {
+            Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(cropID));
+            if (item != null) crop = new ItemStack(item, 1, cropMeta);
+            if (crop == null) cropItemExists = false;
+        }
+        return crop;
+    }
 
     public BlockGenericCrop(String c, int meta, int cMin) {
         cropItemExists = true;
@@ -42,24 +51,15 @@ public class BlockGenericCrop extends BlockCrops implements IGenericBlock {
 
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-        int age = getAge(state);
-        Random rand = world instanceof World ? ((World)world).rand : new Random();
+        Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+        int count = quantityDropped(state, fortune, rand);
 
-        if (age >= getMaxAge()) {
-            if (crop == null && cropItemExists) {
-                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(cropID));
-                if (item != null) crop = new ItemStack(item, 1, cropMeta);
-                if (crop == null) cropItemExists = false;
-            }
-            if (crop != null) {
-                for (int i = 0; i < rand.nextInt(cMin) + 1; i++) {
-                    ContentCreator.getLogger().info("Adding " + crop.getItem().getRegistryName() + " to drops.");
-                    drops.add(crop.copy());
-                }
-            }
-        }
+        ItemStack itemStack = tryGetCrop();
+        if (itemStack != null)
+            for (int i = 0; i < count; i++)
+                drops.add(itemStack.copy());
 
-        drops.add(s.copy());
+        drops.add(seed.copy());
     }
 
     @Override
@@ -78,27 +78,32 @@ public class BlockGenericCrop extends BlockCrops implements IGenericBlock {
 
     @Override
     public int damageDropped(IBlockState state) {
-        return this.isMaxAge(state) ? crop.getMetadata() : s.getMetadata();
+        return this.isMaxAge(state) ? tryGetCrop().getMetadata() : seed.getMetadata();
     }
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return this.isMaxAge(state) ? crop.getItem() : s.getItem();
+        return this.isMaxAge(state) ? tryGetCrop().getItem() : seed.getItem();
     }
 
     @Override
     public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-        return s;
+        return seed;
+    }
+
+    @Override
+    public int quantityDropped(IBlockState state, int fortune, Random random) {
+        return getAge(state) >= getMaxAge() ? Math.max(1, random.nextInt(cMin)) * Math.max(1, fortune) : 0;
     }
 
     @Override
     protected Item getCrop() {
-        return Items.AIR;
+        return tryGetCrop().getItem();
     }
 
     @Override
     protected Item getSeed() {
-        return Items.AIR;
+        return seed.getItem();
     }
 
     @Override
@@ -109,7 +114,7 @@ public class BlockGenericCrop extends BlockCrops implements IGenericBlock {
     @Override
     public Item createItem(Block block) {
         Item seeds = new ItemSeeds(block, Blocks.FARMLAND).setRegistryName(block.getRegistryName()).setUnlocalizedName(block.getUnlocalizedName());
-        this.s = new ItemStack(seeds);
+        this.seed = new ItemStack(seeds);
         return seeds;
     }
 }

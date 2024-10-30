@@ -22,7 +22,7 @@ public class BlockGenericCocoa extends BlockCocoa implements IGenericBlock {
     private String cropID;
     private int cropMeta;
     private ItemStack crop;
-    private int cMin;
+    private int cMin, cMax;
 
     @Nullable
     private ItemStack tryGetCrop(){
@@ -34,7 +34,7 @@ public class BlockGenericCocoa extends BlockCocoa implements IGenericBlock {
         return crop;
     }
 
-    public BlockGenericCocoa(String c, int meta, int cMin) {
+    public BlockGenericCocoa(String c, int meta, int cMin, int cMax) {
         cropItemExists = true;
         cropID = c;
         cropMeta = meta;
@@ -44,6 +44,7 @@ public class BlockGenericCocoa extends BlockCocoa implements IGenericBlock {
         crop = itemStack == null ? null : itemStack;
 
         this.cMin = Math.max(cMin, 1);
+        this.cMax = Math.max(cMin, cMax);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class BlockGenericCocoa extends BlockCocoa implements IGenericBlock {
 
     @Override
     public int quantityDropped(IBlockState state, int fortune, Random random) {
-        return state.getValue(AGE) >= 2 ? Math.max(1, random.nextInt(cMin)) * Math.max(1, fortune) : 0;
+        return state.getValue(AGE) >= 2 ? (random.nextInt((cMax - cMin) + 1) + cMin) * Math.max(1, fortune) : 0;
     }
 
     @Override

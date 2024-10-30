@@ -104,8 +104,8 @@ public class BlockGeneric {
     }
 
     @ZenMethod
-    public static BlockGeneric createCocoaCrop(String name, String crop, @Optional int meta, @Optional int minDrop) {
-        return new BlockGeneric(createBlock(new BlockGenericCocoa(new ItemStack(Item.getByNameOrId(crop), 1, meta), minDrop), name));
+    public static BlockGeneric createCocoaCrop(String name, String crop, @Optional int meta, @Optional int cropMinDrop) {
+        return new BlockGeneric(createBlock(new BlockGenericCocoa(crop, meta, cropMinDrop), name));
     }
 
     @ZenMethod

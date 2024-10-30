@@ -53,7 +53,7 @@ public class BlockGenericCocoa extends BlockCocoa implements IGenericBlock {
 
     @Override
     public int quantityDropped(IBlockState state, int fortune, Random random) {
-        return state.getValue(AGE) >= 2 ? Math.max(1, random.nextInt(cMin)) * Math.max(1, fortune) + tryGetCrop().getCount() : 1;
+        return state.getValue(AGE) >= 2 ? Math.max(1, random.nextInt(cMin)) * Math.max(1, fortune) : 0;
     }
 
     @Override
@@ -69,7 +69,8 @@ public class BlockGenericCocoa extends BlockCocoa implements IGenericBlock {
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         Random rand = world instanceof World ? ((World)world).rand : RANDOM;
-        int count = quantityDropped(state, fortune, rand);
+        // drop 1 more
+        int count = quantityDropped(state, fortune, rand) + 1;
 
         ItemStack itemStack = tryGetCrop();
         if (itemStack != null)

@@ -109,6 +109,16 @@ public class BlockGeneric {
     }
 
     @ZenMethod
+    public static BlockGeneric createHorizontal(IMaterial material, MapColor mapColor, String name) {
+        return new BlockGeneric(createBlock(new BlockGenericHorizontal(CraftTweakerMC.getMaterial(material), mapColor), name));
+    }
+
+    @ZenMethod
+    public static BlockGeneric createHorizontal(IMaterial material, String name) {
+        return new BlockGeneric(createBlock(new BlockGenericHorizontal(CraftTweakerMC.getMaterial(material)), name));
+    }
+
+    @ZenMethod
     public static BlockGeneric createSlab(IMaterial material, MapColor mapColor, String name) {
         return new BlockGeneric(new BlockGenericHalfSlab(CraftTweakerMC.getMaterial(material), mapColor, name));
     }

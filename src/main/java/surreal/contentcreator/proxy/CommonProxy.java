@@ -1,22 +1,20 @@
 package surreal.contentcreator.proxy;
 
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.tuple.Pair;
-import surreal.contentcreator.ContentCreator;
 import surreal.contentcreator.common.block.BlockMaterial;
 import surreal.contentcreator.common.fluid.FluidBase;
 import surreal.contentcreator.common.fluid.FluidBlockBase;
@@ -44,6 +42,8 @@ public class CommonProxy {
     public static List<FluidBase> FLUIDS = new ArrayList<>();
 
     public static List<SoundEvent> SOUNDS = new ArrayList<>();
+
+    public static List<Enchantment> ENCHANTMENTS = new ArrayList<>();
 
     public void preInit(FMLPreInitializationEvent event) {
         registerFluids();
@@ -101,6 +101,12 @@ public class CommonProxy {
             BlockMaterial block = new BlockMaterial(blockCount, part, mats);
             MAT_BLOCKS.add(block);
         }
+    }
+
+    @SubscribeEvent
+    public static void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
+        IForgeRegistry<Enchantment> registry = event.getRegistry();
+        ENCHANTMENTS.forEach(registry::register);
     }
 
     @SubscribeEvent

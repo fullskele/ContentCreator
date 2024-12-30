@@ -104,6 +104,37 @@ public class BlockGeneric {
     }
 
     @ZenMethod
+    public static BlockGeneric createCropRestrictedByBlock(String name, String crop, String block, @Optional int cropMeta, @Optional int blockMeta, @Optional int cropMinDrop, @Optional int cropMaxDrop) {
+        return new BlockGeneric(createBlock(new BlockGenericCropRestricted(crop, cropMeta, cropMinDrop, cropMaxDrop, block, blockMeta), name));
+    }
+
+
+    @ZenMethod
+    public static BlockGeneric createCropRestrictedByOreDictionary(String name, String crop, String oreDictionary, @Optional int cropMeta, @Optional int cropMinDrop, @Optional int cropMaxDrop) {
+        return new BlockGeneric(createBlock(new BlockGenericCropRestricted(crop, cropMeta, cropMinDrop, cropMaxDrop, oreDictionary), name));
+    }
+
+    @ZenMethod
+    public static BlockGeneric createStem(String name, String block, @Optional int meta) {
+        return new BlockGeneric(createBlock(BlockGenericStem.create(block, meta), name));
+    }
+
+    @ZenMethod
+    public static BlockGeneric createCropTall(String name, String crop, @Optional int meta, @Optional int cropMinDrop, @Optional int cropMaxDrop) {
+        return new BlockGeneric(createBlock(new BlockGenericCropTall(crop, meta, cropMinDrop, cropMaxDrop), name));
+    }
+
+    @ZenMethod
+    public static BlockGeneric createCropTallRestrictedByBlock(String name, String crop, String block, @Optional int cropMeta, @Optional int blockMeta, @Optional int cropMinDrop, @Optional int cropMaxDrop) {
+        return new BlockGeneric(createBlock(new BlockGenericCropTallRestricted(crop, cropMeta, cropMinDrop, cropMaxDrop, block, blockMeta), name));
+    }
+
+    @ZenMethod
+    public static BlockGeneric createCropTallRestrictedByOreDictionary(String name, String crop, String oreDictionary, @Optional int cropMeta, @Optional int cropMinDrop, @Optional int cropMaxDrop) {
+        return new BlockGeneric(createBlock(new BlockGenericCropTallRestricted(crop, cropMeta, cropMinDrop, cropMaxDrop, oreDictionary), name));
+    }
+
+    @ZenMethod
     public static BlockGeneric createCocoaCrop(String name, String crop, @Optional int meta, @Optional int cropMinDrop, @Optional int cropMaxDrop) {
         return new BlockGeneric(createBlock(new BlockGenericCocoa(crop, meta, cropMinDrop, cropMaxDrop), name));
     }

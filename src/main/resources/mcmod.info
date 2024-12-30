@@ -3,7 +3,7 @@
   "modid": "contentcreator",
   "name": "Content Creator",
   "description": "A mod to create items, blocks, fluids etc. with crafttweaker",
-  "version": "1.3.6-4",
+  "version": "1.3.6-5",
   "mcversion": "1.12.2",
   "url": "https://github.com/ISurrealI/ContentCreator",
   "authorList": ["Surreal","CaliforniaDemise","fullskele"],

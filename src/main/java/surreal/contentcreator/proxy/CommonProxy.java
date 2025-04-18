@@ -5,6 +5,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -44,6 +45,7 @@ public class CommonProxy {
     public static List<SoundEvent> SOUNDS = new ArrayList<>();
 
     public static List<Enchantment> ENCHANTMENTS = new ArrayList<>();
+    public static List<Potion> POTIONS = new ArrayList<>();
 
     public void preInit(FMLPreInitializationEvent event) {
         registerFluids();
@@ -107,6 +109,12 @@ public class CommonProxy {
     public static void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
         IForgeRegistry<Enchantment> registry = event.getRegistry();
         ENCHANTMENTS.forEach(registry::register);
+    }
+
+    @SubscribeEvent
+    public static void registerPotions(RegistryEvent.Register<Potion> event) {
+        IForgeRegistry<Potion> registry = event.getRegistry();
+        POTIONS.forEach(registry::register);
     }
 
     @SubscribeEvent

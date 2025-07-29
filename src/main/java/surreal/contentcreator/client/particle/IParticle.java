@@ -193,7 +193,4 @@ public interface IParticle {
 
     @ZenMethod
     IParticle onUpdate(IParticleUpdateFunc func);
-
-    @ZenMethod
-    void register();
 }

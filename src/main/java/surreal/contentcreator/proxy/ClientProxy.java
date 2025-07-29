@@ -3,6 +3,8 @@ package surreal.contentcreator.proxy;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockColored;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -10,6 +12,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -190,5 +193,9 @@ public class ClientProxy extends CommonProxy {
         for (Item item : CommonProxy.MAT_ITEMS.values()) {
             event.getItemColors().registerItemColorHandler(MATERIALITEMCOLOR, item);
         }
+    }
+
+    public static void registerClientParticle(EnumParticleTypes type, IParticleFactory factory) {
+        Minecraft.getMinecraft().effectRenderer.registerParticle(type.getParticleID(), factory);
     }
 }

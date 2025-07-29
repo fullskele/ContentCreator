@@ -1,19 +1,21 @@
 package surreal.contentcreator.client.particle;
 
 import net.minecraft.client.Minecraft;
+
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import surreal.contentcreator.ContentCreator;
-import surreal.contentcreator.ModValues;
 import surreal.contentcreator.functions.particle.IParticleUpdateFunc;
-
 import java.util.Random;
 
 @SideOnly(Side.CLIENT)
 public class ParticleCustom extends Particle {
+    public static IParticleFactory ParticleCustomFactory;
     public TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
     public IParticleUpdateFunc UPDATE = null;
 
@@ -189,4 +191,14 @@ public class ParticleCustom extends Particle {
         if (UPDATE != null) UPDATE.onUpdate(this.particle);
         else super.onUpdate();
     }
+
+    @SideOnly(Side.CLIENT)
+    public static class ParticleCustomFactory implements IParticleFactory
+    {
+        public Particle createParticle(int id, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, int... params)
+        {
+            return new ParticleCustom(world, x, y, z);
+        }
+    }
+
 }

@@ -66,7 +66,7 @@ public class PotionBase extends Potion {
     @ZenMethod
     public PotionBase setShouldRenderHUD(boolean renderHUD) {
         this.shouldRenderHUD = renderHUD;
-        return this;
+    return this;
     }
 
     @ZenMethod

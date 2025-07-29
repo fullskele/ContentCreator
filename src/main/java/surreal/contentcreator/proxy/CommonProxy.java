@@ -1,6 +1,7 @@
 package surreal.contentcreator.proxy;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -46,6 +47,7 @@ public class CommonProxy {
 
     public static List<Enchantment> ENCHANTMENTS = new ArrayList<>();
     public static List<Potion> POTIONS = new ArrayList<>();
+    public static List<Particle> PARTICLES = new ArrayList<>();
 
     public void preInit(FMLPreInitializationEvent event) {
         registerFluids();

@@ -7,10 +7,11 @@ import crafttweaker.api.util.IAxisAlignedBB;
 import crafttweaker.api.util.IRandom;
 import crafttweaker.api.world.IVector3d;
 import crafttweaker.api.world.IWorld;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.Particle;
+
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.EnumHelper;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenMethodStatic;
 import surreal.contentcreator.functions.particle.IParticleUpdateFunc;
@@ -302,32 +303,6 @@ public class MCParticle implements IParticle {
         return this;
     }
 
-    @Override
-    public void register() {
-        if (this.particle.layerFX == 1) this.particle.setParticleTexture(this.particle.sprite);
-        Minecraft.getMinecraft().effectRenderer.addEffect(this.particle);
-    }
-
-    @ZenMethodStatic
-    public static double getInterpPosX() {
-        return Particle.interpPosX;
-    }
-
-    @ZenMethodStatic
-    public static double getInterpPosY() {
-        return Particle.interpPosY;
-    }
-
-    @ZenMethodStatic
-    public static double getInterpPosZ() {
-        return Particle.interpPosZ;
-    }
-
-    @ZenMethodStatic
-    public static IVector3d getCameraViewDir() {
-        return CraftTweakerMC.getIVector3d(Particle.cameraViewDir);
-    }
-
     @ZenMethodStatic
     public static MCParticle particle(IWorld world, double posXIn, double posYIn, double posZIn) {
         return new MCParticle(world, posXIn, posYIn, posZIn);
@@ -337,4 +312,22 @@ public class MCParticle implements IParticle {
     public static MCParticle particle(IWorld world, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         return new MCParticle(world, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
     }
+
+    @ZenMethodStatic
+    public static EnumParticleTypes register(String enumName, String name, boolean ignoreRange, int argumentCount) {
+        int id = EnumParticleTypes.values().length;
+
+        for (EnumParticleTypes existingParticle : EnumParticleTypes.values()) {
+            if (existingParticle.getParticleID() == id) {
+                throw new RuntimeException("Attempted to register a particle with the same integer ID as " + existingParticle.getParticleName() + " (" + existingParticle + ").");
+            }
+        }
+
+        EnumParticleTypes particle = EnumHelper.addEnum(EnumParticleTypes.class, enumName,
+                new Class[]{String.class, int.class, boolean.class, int.class},
+                name, id, ignoreRange, argumentCount);
+
+        return particle;
+    }
+
 }
